@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Mailer\Email;
 
 /**
  * Ciclistas Controller
@@ -170,11 +171,13 @@ class CiclistasController extends AppController
     public function send() {
         if ($this->request->is("post")) {
             $mensaje = $this->request->getData();
-                      
-            $para      = 'rabp_91@hotmail.com';
-            $titulo    = $mensaje['asunto'];
-            $mensaje   = $mensaje['cuerpo'];
-            $cabeceras = 'From: prueba@prueba.com' . "\r\n";
+                     
+            $email = new Email('default');
+            $email->from(['prueba@prueba.com' => 'Cletear Rutear'])
+                ->to('rabp_91@hotmail.com')
+                ->emailFormat('html')
+                ->subject($mensaje['asunto'])
+                ->send($mensaje['cuerpo']);
             
             if (mail($para, $titulo, $mensaje, $cabeceras)) {
                 $message =  [
