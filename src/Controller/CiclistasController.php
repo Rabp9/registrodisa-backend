@@ -166,4 +166,30 @@ class CiclistasController extends AppController
             $this->set("_serialize", ["message", "filename"]);
         }
     }
+    
+    public function send() {
+        if ($this->request->is("post")) {
+            $mensaje = $this->request->getData();
+                      
+            $para      = 'rabp_91@hotmail.com';
+            $titulo    = $mensaje['asunto'];
+            $mensaje   = $mensaje['cuerpo'];
+            $cabeceras = 'From: prueba@prueba.com' . "\r\n";
+            
+            if (mail($para, $titulo, $mensaje, $cabeceras)) {
+                $message =  [
+                      'text' => __('El mesnaje fue enviado correctamente.'),
+                      'type' => 'success',
+                ];
+            } else {
+                $message =  [
+                    'text' => __('El mensaje no fue enviado correctamente'),
+                    'type' => 'error',
+                ];
+            }
+
+            $this->set(compact('message'));
+            $this->set('_serialize', ['message']);
+        }
+    }
 }

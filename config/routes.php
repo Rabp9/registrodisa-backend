@@ -86,6 +86,10 @@ Router::scope('/', function ($routes) {
             'upload' => [
                 'action' => 'upload',
                 'method' => 'POST'
+            ],
+            'send' => [
+                'action' => 'send',
+                'method' => 'POST'
             ]
         ]
     ]);
