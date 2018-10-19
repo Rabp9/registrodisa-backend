@@ -186,14 +186,12 @@ class CiclistasController extends AppController
                         ->send($mensaje['cuerpo']);
                 }
             }
-            
-            $message =  [
-                  'text' => __('El mesnaje fue enviado correctamente.'),
-                  'type' => 'success',
-            ];
 
-            $this->set(compact('message'));
-            $this->set('_serialize', ['message']);
+            $code = 200;
+            $message = 'La imagen fue subida correctamente';
+            
+            $this->set(compact('code', 'message'));
+            $this->set('_serialize', ['code', 'message']);
         }
     }
 }
