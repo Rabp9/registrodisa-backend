@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Mailer\Email;
+use Cake\Filesystem\File;
 
 /**
  * Ciclistas Controller
@@ -149,14 +150,14 @@ class CiclistasController extends AppController
     public function upload() {
         if ($this->request->is("post")) {
             $imagen = $this->request->data["file"];
-            
+
             $pathDst = WWW_ROOT . "img" . DS . "mensajes" . DS;
             $ext = pathinfo($imagen['name'], PATHINFO_EXTENSION);
             $filename = 'mensaje-' . $this->Random->randomString() . '.' . $ext;
-           
+            
             $filenameSrc = $imagen["tmp_name"];
-            $fileSrc = new File($filename_src);
-            if ($file_src->copy($pathDst . $filename)) {
+            $fileSrc = new File($filenameSrc);
+            if ($fileSrc->copy($pathDst . $filename)) {
                 $code = 200;
                 $message = 'La imagen fue subida correctamente';
             } else {
@@ -173,23 +174,23 @@ class CiclistasController extends AppController
             $mensaje = $this->request->getData();
                      
             $email = new Email('default');
-            $email->from(['prueba@prueba.com' => 'Cletear Rutear'])
-                ->to('rabp_91@hotmail.com')
-                ->emailFormat('html')
-                ->subject($mensaje['asunto'])
-                ->send($mensaje['cuerpo']);
+            $ciclistas = $this->Ciclistas->find()
+                ->select(['email']);
             
-            if (mail($para, $titulo, $mensaje, $cabeceras)) {
-                $message =  [
-                      'text' => __('El mesnaje fue enviado correctamente.'),
-                      'type' => 'success',
-                ];
-            } else {
-                $message =  [
-                    'text' => __('El mensaje no fue enviado correctamente'),
-                    'type' => 'error',
-                ];
+            foreach ($ciclistas as $ciclista) {
+                if (!is_null($ciclista->email)) {
+                    $email->from([$mensaje['desde'] => $mensaje['emisor']])
+                        ->to($ciclista->email)
+                        ->emailFormat('html')
+                        ->subject($mensaje['asunto'])
+                        ->send($mensaje['cuerpo']);
+                }
             }
+            
+            $message =  [
+                  'text' => __('El mesnaje fue enviado correctamente.'),
+                  'type' => 'success',
+            ];
 
             $this->set(compact('message'));
             $this->set('_serialize', ['message']);
